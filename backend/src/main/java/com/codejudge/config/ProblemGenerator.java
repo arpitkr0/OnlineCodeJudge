@@ -10,7 +10,7 @@ import java.util.*;
 public class ProblemGenerator {
 
     public static void seedProblems(ProblemRepository problemRepository, SubmissionRepository submissionRepository) {
-        if (problemRepository.count() > 0 && problemRepository.existsByTitle("Watermelon")) {
+        if (problemRepository.count() > 0 && problemRepository.existsByTitle("Watermelon") && !problemRepository.existsByTitle("Way Too Long Words")) {
             return; // Already seeded with Codeforces problems
         }
 
@@ -19,9 +19,7 @@ public class ProblemGenerator {
         problemRepository.deleteAll();
 
         seedWatermelon(problemRepository);
-        seedWayTooLongWords(problemRepository);
         seedTeam(problemRepository);
-        seedTrappingRainWater(problemRepository);
         seedBitPlusPlus(problemRepository);
     }
 
@@ -60,55 +58,6 @@ public class ProblemGenerator {
         repository.save(p);
     }
 
-    private static void seedWayTooLongWords(ProblemRepository repository) {
-        Problem p = new Problem();
-        p.setTitle("Way Too Long Words");
-        p.setDifficulty(Difficulty.EASY);
-        p.setTimeLimitMs(1000);
-        p.setMemoryLimitMb(256);
-        p.setDescription("""
-                <div class="space-y-4 font-sans text-slate-300">
-                  <p class="text-sm leading-relaxed">Sometimes some words like <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">localization</code> or <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">internationalization</code> are so long that writing them many times in one text is quite tiresome.</p>
-                  <p class="text-sm leading-relaxed">Let's consider a word <i>too long</i>, if its length is strictly more than <code class="bg-dark-900 px-1.5 py-0.5 rounded text-amber-400 font-mono">10</code> characters. All too long words should be replaced with a special abbreviation.</p>
-                  <p class="text-sm leading-relaxed">This abbreviation is made like this: we write down the first and the last letter of a word and between them we write the number of letters between the first and the last letters. That number is in decimal system and doesn't contain any leading zeroes. For example, <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">localization</code> will be spelt as <code class="bg-dark-900 px-1.5 py-0.5 rounded text-emerald-400 font-mono">l10n</code>.</p>
-                  <h3 class="text-xs font-extrabold uppercase tracking-wider text-cyan-400 mt-6 mb-2">Input Format</h3>
-                  <p class="text-sm leading-relaxed">The first line contains an integer <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">n</code> (<code class="bg-dark-900 px-1.5 py-0.5 rounded text-slate-200 font-mono">1 &le; n &le; 100</code>). Each of the following <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">n</code> lines contains one word. All the words consist of lowercase Latin letters and possess the lengths of from 1 to 100 characters.</p>
-                  <h3 class="text-xs font-extrabold uppercase tracking-wider text-cyan-400 mt-6 mb-2">Output Format</h3>
-                  <p class="text-sm leading-relaxed">Print <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">n</code> lines. The <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">i</code>-th line should contain the result of replacing of the <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">i</code>-th word from the input data.</p>
-                </div>
-                """);
-
-        // 1. Sample Test Cases
-        addCase(p, "4\nword\nlocalization\ninternationalization\npneumonoultramicroscopicsilicovolcanoconiosis",
-                "word\nl10n\ni18n\np43s", false);
-        addCase(p, "2\nhello\ncodeforces", "hello\nc8s", false);
-
-        // 2. Stress & Edge Cases
-        Random rand = new Random(71);
-        for (int i = 0; i < 50; i++) {
-            int n = 1 + rand.nextInt(20);
-            StringBuilder inSb = new StringBuilder().append(n).append("\n");
-            StringBuilder outSb = new StringBuilder();
-            for (int j = 0; j < n; j++) {
-                int len = 1 + rand.nextInt(50);
-                StringBuilder word = new StringBuilder();
-                for (int k = 0; k < len; k++) {
-                    word.append((char) ('a' + rand.nextInt(26)));
-                }
-                String wStr = word.toString();
-                inSb.append(wStr).append((j == n - 1) ? "" : "\n");
-                if (wStr.length() > 10) {
-                    outSb.append(wStr.charAt(0)).append(wStr.length() - 2).append(wStr.charAt(wStr.length() - 1));
-                } else {
-                    outSb.append(wStr);
-                }
-                if (j < n - 1) outSb.append("\n");
-            }
-            addCase(p, inSb.toString(), outSb.toString(), true);
-        }
-
-        repository.save(p);
-    }
 
     private static void seedTeam(ProblemRepository repository) {
         Problem p = new Problem();
@@ -150,80 +99,6 @@ public class ProblemGenerator {
         repository.save(p);
     }
 
-    private static void seedTrappingRainWater(ProblemRepository repository) {
-        Problem p = new Problem();
-        p.setTitle("Trapping Rain Water");
-        p.setDifficulty(Difficulty.MEDIUM);
-        p.setTimeLimitMs(1500);
-        p.setMemoryLimitMb(256);
-        p.setDescription("""
-                <div class="space-y-4 font-sans text-slate-300">
-                  <p class="text-sm leading-relaxed">Given <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">n</code> non-negative integers representing an elevation map where the width of each bar is <code class="bg-dark-900 px-1.5 py-0.5 rounded text-amber-400 font-mono">1</code>, compute how much water it can trap after raining.</p>
-                  
-                  <div class="my-6 bg-dark-950 p-5 rounded-2xl border border-cyan-500/30 shadow-inner">
-                    <div class="text-[11px] font-extrabold uppercase tracking-widest text-cyan-400 mb-3 font-sans flex items-center gap-2">
-                      <span>Elevation Map Visual Diagram (Example 1)</span>
-                    </div>
-                    <pre class="text-xs sm:text-sm font-mono text-cyan-300 leading-tight overflow-x-auto select-none py-2">
-                       [Elevation Map: 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
-                    
-                  3 |                             [█]
-                  2 |                 [█] ≈≈≈ [█] [█] [█] ≈≈≈ [█]
-                  1 |     [█] ≈≈≈ [█] [█] [█] [█] [█] [█] [█] [█] [█]
-                  0 +-[0]-[1]-[0]-[2]-[1]-[0]-[1]-[3]-[2]-[1]-[2]-[1]-
-                    </pre>
-                    <div class="text-xs text-slate-400 mt-2 italic font-sans">
-                      Legend: <span class="text-cyan-300 font-bold">[█]</span> = Solid Bar Block | <span class="text-blue-400 font-bold">≈≈≈</span> = Trapped Water (6 Units total)
-                    </div>
-                  </div>
-
-                  <h3 class="text-xs font-extrabold uppercase tracking-wider text-cyan-400 mt-6 mb-2">Input Format</h3>
-                  <p class="text-sm leading-relaxed">The first line contains a single integer <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">n</code> (<code class="bg-dark-900 px-1.5 py-0.5 rounded text-slate-200 font-mono">1 &le; n &le; 20000</code>) &mdash; the number of bars. The second line contains <code class="bg-dark-900 px-1.5 py-0.5 rounded text-cyan-400 font-mono">n</code> space-separated non-negative integers representing the elevation map.</p>
-                  <h3 class="text-xs font-extrabold uppercase tracking-wider text-cyan-400 mt-6 mb-2">Output Format</h3>
-                  <p class="text-sm leading-relaxed">Print a single integer &mdash; the total number of units of rain water trapped.</p>
-                </div>
-                """);
-
-        // 1. Sample Test Cases
-        addCase(p, "12\n0 1 0 2 1 0 1 3 2 1 2 1", "6", false);
-        addCase(p, "6\n4 2 0 3 2 5", "9", false);
-
-        // 2. Programmatic Stress Cases
-        Random rand = new Random(42);
-        for (int i = 0; i < 50; i++) {
-            int n = 10 + rand.nextInt(2000);
-            int[] height = new int[n];
-            StringBuilder inSb = new StringBuilder().append(n).append("\n");
-            for (int j = 0; j < n; j++) {
-                height[j] = rand.nextInt(50);
-                inSb.append(height[j]).append((j == n - 1) ? "" : " ");
-            }
-            long trapped = solveTrap(height);
-            addCase(p, inSb.toString(), String.valueOf(trapped), true);
-        }
-
-        repository.save(p);
-    }
-
-    private static long solveTrap(int[] height) {
-        int n = height.length;
-        if (n <= 2) return 0;
-        int left = 0, right = n - 1;
-        int maxLeft = 0, maxRight = 0;
-        long total = 0;
-        while (left <= right) {
-            if (height[left] <= height[right]) {
-                if (height[left] >= maxLeft) maxLeft = height[left];
-                else total += maxLeft - height[left];
-                left++;
-            } else {
-                if (height[right] >= maxRight) maxRight = height[right];
-                else total += maxRight - height[right];
-                right--;
-            }
-        }
-        return total;
-    }
 
     private static void seedBitPlusPlus(ProblemRepository repository) {
         Problem p = new Problem();

@@ -27,20 +27,10 @@ const PROBLEM_EDITORIALS = {
     complexity: "Time: O(1) | Space: O(1)",
     explanation: "An even number W can be divided into two even positive integers A and B if and only if W is even and strictly greater than 2. Why? Because if W = A + B where A and B are positive even integers, their sum W must be even and at least 2 + 2 = 4. Conversely, if W is even and W >= 4, we can split it into 2 and W - 2, which are both positive even numbers!"
   },
-  "Way Too Long Words": {
-    title: "String Length Verification & Character Indexing",
-    complexity: "Time: O(N) | Space: O(1)",
-    explanation: "For each word, check its length L. If L <= 10, print the word as is. Otherwise, print the first character, followed by the integer (L - 2), followed by the last character."
-  },
   "Team": {
     title: "Greedy Vote Counting",
     complexity: "Time: O(N) | Space: O(1)",
     explanation: "For each problem, sum up the three binary opinions (Petya, Vasya, Tonya). If the sum is >= 2, increment your total solved counter."
-  },
-  "Trapping Rain Water": {
-    title: "Two Pointers / Left-Right Prefix Max",
-    complexity: "Time: O(N) | Space: O(1)",
-    explanation: "Maintain two pointers (left = 0, right = n - 1) and variables maxLeft and maxRight. At each step, compare height[left] and height[right]. If height[left] <= height[right], update maxLeft and add (maxLeft - height[left]) to total water, then increment left. Otherwise do the symmetric operation on the right pointer."
   },
   "Bit++": {
     title: "String Substring Matching",
@@ -506,7 +496,7 @@ const ProblemPage = () => {
                       </span>
                     )}
                   </div>
-                  {submission && (
+                  {submission && !submission.sampleOnly && (
                     <span className="text-xs font-mono text-slate-400">ID: #{submission.id}</span>
                   )}
                 </div>

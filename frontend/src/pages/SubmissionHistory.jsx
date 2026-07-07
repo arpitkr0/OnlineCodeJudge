@@ -10,6 +10,7 @@ const SubmissionHistory = () => {
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
   useEffect(() => {
     fetchHistory();
@@ -22,6 +23,7 @@ const SubmissionHistory = () => {
       const content = res.data?.content || (Array.isArray(res.data) ? res.data : []);
       setSubmissions(content);
       setTotalPages(res.data?.totalPages || 1);
+      setTotalElements(res.data?.totalElements || content.length);
     } catch (err) {
       console.error('Failed to load submissions:', err);
       setError('Could not fetch your submission history. Please make sure you are logged in and backend is online.');
@@ -101,10 +103,10 @@ const SubmissionHistory = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 text-sm">
-                {submissions.map((sub) => (
+                {submissions.map((sub, index) => (
                   <tr key={sub.id} className="table-row-hover transition-colors">
                     <td className="py-4 px-6 font-mono text-xs text-slate-400">
-                      #{sub.id}
+                      #{totalElements ? totalElements - (page * 15) - index : sub.id}
                     </td>
                     <td className="py-4 px-6 font-bold text-white">
                       <Link to={`/problems/${sub.problemId}`} className="hover:text-cyan-400 transition-colors">

@@ -4,9 +4,7 @@ import { Clock, HardDrive, ArrowRight, CheckCircle2, Terminal } from 'lucide-rea
 
 const TOPIC_METADATA = {
   "Watermelon": { tags: ["Math", "Parity", "Number Theory"], acc: "64.2%" },
-  "Way Too Long Words": { tags: ["String", "Implementation"], acc: "58.9%" },
   "Team": { tags: ["Greedy", "Bit Manipulation"], acc: "71.5%" },
-  "Trapping Rain Water": { tags: ["Two Pointers", "Array", "DP"], acc: "38.9%" },
   "Bit++": { tags: ["Implementation", "Simulation"], acc: "82.1%" },
   "Two Sum": { tags: ["Array", "Hash Table"], acc: "53.4%" },
   "Coin Change": { tags: ["Dynamic Programming", "BFS"], acc: "41.8%" },
