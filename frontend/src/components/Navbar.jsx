@@ -75,15 +75,15 @@ const Navbar = () => {
 
           {/* Right Action / User Profile */}
           <div className="flex items-center space-x-3">
-            {isAuthenticated ? (
+            {isAuthenticated && user ? (
               <div className="flex items-center space-x-3.5 bg-surface px-3.5 py-2 rounded-xl border border-surface-border shadow-lg hover:border-surface-hover transition-all duration-200 glow-card">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 rounded-lg bg-surface-light border border-surface-border flex items-center justify-center font-mono font-bold text-amber-accent text-xs">
-                    {user.username.substring(0, 2).toUpperCase()}
+                    {(user?.username || 'U').substring(0, 2).toUpperCase()}
                   </div>
                   <div className="text-left hidden sm:block">
                     <div className="text-xs font-mono font-bold text-text-primary flex items-center gap-1.5">
-                      {user.username}
+                      {user?.username || 'User'}
                       {user.role === 'ADMIN' && (
                         <span className="bg-amber-accent/15 text-amber-accent text-[9px] px-1.5 py-0.5 rounded font-mono font-bold border border-amber-accent/30">
                           PROCTOR
