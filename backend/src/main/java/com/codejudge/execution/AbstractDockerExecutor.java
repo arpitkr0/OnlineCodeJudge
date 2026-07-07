@@ -96,6 +96,9 @@ abstract class AbstractDockerExecutor implements LanguageExecutor {
             script.append("  end=$(date +%s%N | cut -b1-13)\n");
             script.append("  echo $ec > \"exit_${i}.txt\"\n");
             script.append("  echo $((end - start)) > \"runtime_${i}.txt\"\n");
+            script.append("  if [ $ec -ne 0 ] || [ $((end - start)) -gt ").append(problem.getTimeLimitMs()).append(" ]; then\n");
+            script.append("    break\n");
+            script.append("  fi\n");
             script.append("  i=$((i + 1))\n");
             script.append("done\n");
 
