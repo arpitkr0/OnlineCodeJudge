@@ -18,14 +18,15 @@ target/
 hs_err_pid*
 replay_pid*
 *.log
-logs/
+/logs/
 
 # --- Node.js / Vite React Frontend ---
 **/node_modules/
 node_modules/
 **/dist/
 **/dist-ssr/
-**/build/
+/build/
+/frontend/build/
 .npm
 npm-debug.log*
 yarn-debug.log*
@@ -47,10 +48,9 @@ docker-compose.override.yaml
 .docker/
 
 # --- Sandbox & Execution Temporary Files ---
-tmp/
-temp/
-/tmp/codejudge/
-codejudge/
+/tmp/
+/temp/
+/codejudge/
 *.out
 *.exe
 
