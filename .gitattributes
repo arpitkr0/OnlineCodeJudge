@@ -1,0 +1,25 @@
+# ==============================================================================
+# GitHub Linguist Language Configuration (.gitattributes)
+# ==============================================================================
+# This file configures how GitHub calculates the repository's language bar.
+# Since JudgeX is a Java Spring Boot execution engine, we exclude frontend bundles,
+# static assets, and JavaScript libraries from the language statistics.
+
+# 1. Ignore static bundled assets inside backend resources
+backend/src/main/resources/static/** linguist-vendored=true
+backend/src/main/resources/static/** linguist-generated=true
+
+# 2. Ignore frontend distribution builds and UI demonstration scripts
+frontend/** linguist-vendored=true
+frontend/** linguist-generated=true
+
+# 3. Explicitly exclude JavaScript, CSS, and HTML from language calculation
+*.js linguist-vendored=true
+*.jsx linguist-vendored=true
+*.css linguist-vendored=true
+*.html linguist-vendored=true
+
+# 4. Highlight Java, Dockerfiles, and Maven as core project languages
+*.java linguist-detectable=true
+Dockerfile* linguist-detectable=true
+*.xml linguist-detectable=true
