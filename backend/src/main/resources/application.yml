@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: online-code-judge
+  datasource:
+    url: ${DB_URL:jdbc:h2:mem:codejudge;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1}
+    username: ${DB_USER:sa}
+    password: ${DB_PASSWORD:}
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: codejudge-workers
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: com.codejudge.*
+    producer:
+      retries: 3
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:Y29kZWp1ZGdlU2VjcmV0S2V5Rm9yRGV2T25seUNoYW5nZUluUHJvZA==}
+    expiration-ms: 86400000
+  kafka:
+    enabled: ${KAFKA_ENABLED:false}
+    submissions-topic: code-submissions
+    dlq-topic: code-submissions-dlq
+  execution:
+    docker-enabled: ${DOCKER_EXECUTION_ENABLED:true}
+    workspace-root: ${JUDGE_WORKSPACE:${java.io.tmpdir}/codejudge}
+    default-memory-mb: 256
+    default-cpus: 0.5
+    pids-limit: 50
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

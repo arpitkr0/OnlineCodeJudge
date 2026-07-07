@@ -1,0 +1,373 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-base text-text-primary font-sans antialiased selection:bg-amber-accent selection:text-base min-h-screen overflow-x-hidden;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   1. AMBIENT BACKGROUND — Drifting dot-matrix grid
+   ═══════════════════════════════════════════════════════════ */
+.bg-ambient-grid {
+  background-color: #0B0E14;
+  background-image: radial-gradient(#2c374e 1.5px, transparent 1.5px);
+  background-size: 36px 36px;
+  animation: grid-drift 90s linear infinite;
+  position: relative;
+}
+
+@keyframes grid-drift {
+  from { background-position: 0 0; }
+  to { background-position: 72px 72px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   2. SCROLLBAR — Sleek dark scrollbar
+   ═══════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0B0E14; }
+::-webkit-scrollbar-thumb { background: #222938; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #E8B85C; }
+
+/* ═══════════════════════════════════════════════════════════
+   3. UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════ */
+@layer utilities {
+  .glass-overlay {
+    @apply bg-surface/80 backdrop-blur-xl border border-surface-border shadow-2xl relative transition-all duration-300;
+    box-shadow:
+      inset 0 1px 0 0 rgba(232, 184, 92, 0.25),
+      inset 1px 0 0 0 rgba(255, 255, 255, 0.06),
+      0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  }
+
+  .glass-nav {
+    @apply bg-base/85 backdrop-blur-md border-b border-surface-border relative;
+    box-shadow: inset 0 -1px 0 0 rgba(34, 41, 56, 0.8);
+  }
+
+  .problem-tile {
+    @apply bg-surface border border-surface-border rounded-xl p-6 transition-all duration-300 ease-out;
+  }
+
+  .problem-tile:hover {
+    transform: translateY(-5px) scale(1.008);
+    border-color: rgba(232, 184, 92, 0.55);
+    background-color: #151A24;
+    box-shadow: 0 12px 30px -10px rgba(232, 184, 92, 0.18);
+  }
+
+  .text-amber-glow {
+    color: #E8B85C;
+    text-shadow: 0 0 16px rgba(232, 184, 92, 0.35);
+  }
+
+  .border-hairline { border: 1px solid #222938; }
+
+  /* Button diagonal light sweep on hover */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -60%;
+    width: 30%; height: 200%;
+    background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+    transform: rotate(25deg);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0;
+  }
+  .btn-shine:hover::after { left: 130%; opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   4. STAGGERED PAGE-LOAD ENTRANCE ANIMATIONS
+   ═══════════════════════════════════════════════════════════ */
+.animate-load-nav {
+  animation: fade-down-smooth 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-load-hero {
+  animation: fade-up-smooth 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+  opacity: 0;
+}
+.animate-load-code {
+  animation: fade-up-smooth 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  opacity: 0;
+}
+.animate-fade-in {
+  animation: fade-up-smooth 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-pulse-slow {
+  animation: pulse-slow-anim 8s ease-in-out infinite;
+}
+
+/* Staggered card reveal — each card slides up with a delay set via inline style */
+.animate-card-reveal {
+  opacity: 0;
+  animation: card-reveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes card-reveal {
+  0% { opacity: 0; transform: translateY(30px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Section slide-in from left */
+.animate-section-left {
+  opacity: 0;
+  animation: slide-in-left 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slide-in-left {
+  0% { opacity: 0; transform: translateX(-40px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Section slide-in from right */
+.animate-section-right {
+  opacity: 0;
+  animation: slide-in-right 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+@keyframes slide-in-right {
+  0% { opacity: 0; transform: translateX(40px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   5. LOGO PULSING NEON AURA
+   ═══════════════════════════════════════════════════════════ */
+.logo-glow {
+  animation: logo-pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes logo-pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(232, 184, 92, 0.05);
+    border-color: rgba(34, 41, 56, 1);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(232, 184, 92, 0.4), 0 0 60px rgba(232, 184, 92, 0.12);
+    border-color: rgba(232, 184, 92, 0.65);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   6. ANIMATED GRADIENT BORDER (rotating conic gradient)
+   Used on hero code panel, feature tags, special cards
+   ═══════════════════════════════════════════════════════════ */
+.gradient-border {
+  position: relative;
+  border: none !important;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--gradient-angle, 0deg),
+    #E8B85C, #5EC98C, #8B5CF6, #E8B85C
+  );
+  z-index: -1;
+  animation: rotate-gradient 6s linear infinite;
+  opacity: 0.6;
+  transition: opacity 0.4s;
+}
+.gradient-border:hover::before {
+  opacity: 1;
+}
+
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes rotate-gradient {
+  to { --gradient-angle: 360deg; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   7. FLOATING PARTICLES (CSS-only with pseudo-elements)
+   Absolutely positioned on the hero section
+   ═══════════════════════════════════════════════════════════ */
+.particles-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(232, 184, 92, 0.35);
+  animation: float-particle linear infinite;
+}
+.particle:nth-child(1) { left: 10%; animation-duration: 18s; animation-delay: 0s; width: 2px; height: 2px; }
+.particle:nth-child(2) { left: 25%; animation-duration: 22s; animation-delay: 3s; width: 3px; height: 3px; background: rgba(94, 201, 140, 0.3); }
+.particle:nth-child(3) { left: 40%; animation-duration: 16s; animation-delay: 1s; width: 2px; height: 2px; }
+.particle:nth-child(4) { left: 55%; animation-duration: 24s; animation-delay: 5s; width: 4px; height: 4px; background: rgba(139, 92, 246, 0.25); }
+.particle:nth-child(5) { left: 70%; animation-duration: 20s; animation-delay: 2s; width: 2px; height: 2px; background: rgba(94, 201, 140, 0.25); }
+.particle:nth-child(6) { left: 85%; animation-duration: 26s; animation-delay: 7s; width: 3px; height: 3px; }
+.particle:nth-child(7) { left: 15%; animation-duration: 19s; animation-delay: 4s; width: 2px; height: 2px; background: rgba(139, 92, 246, 0.3); }
+.particle:nth-child(8) { left: 60%; animation-duration: 21s; animation-delay: 6s; width: 3px; height: 3px; background: rgba(94, 201, 140, 0.2); }
+
+@keyframes float-particle {
+  0% { bottom: -5%; opacity: 0; transform: translateX(0); }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { bottom: 105%; opacity: 0; transform: translateX(60px); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   8. AMBIENT GLOW BLOBS — Slow-drifting colored orbs
+   ═══════════════════════════════════════════════════════════ */
+.ambient-glow-1 {
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 184, 92, 0.18) 0%, transparent 70%);
+  filter: blur(90px);
+  top: -10%; left: -5%;
+  animation: drift-glow-1 25s ease-in-out infinite alternate;
+  pointer-events: none; z-index: 0;
+}
+.ambient-glow-2 {
+  position: absolute;
+  width: 750px; height: 750px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(94, 201, 140, 0.15) 0%, transparent 70%);
+  filter: blur(100px);
+  bottom: 5%; right: -5%;
+  animation: drift-glow-2 30s ease-in-out infinite alternate;
+  pointer-events: none; z-index: 0;
+}
+.ambient-glow-3 {
+  position: absolute;
+  width: 650px; height: 650px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.14) 0%, transparent 70%);
+  filter: blur(90px);
+  top: 35%; left: 20%;
+  animation: drift-glow-3 35s ease-in-out infinite alternate;
+  pointer-events: none; z-index: 0;
+}
+
+@keyframes drift-glow-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(120px, 80px) scale(1.15); }
+  100% { transform: translate(-50px, 150px) scale(0.9); }
+}
+@keyframes drift-glow-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-140px, -60px) scale(0.85); }
+  100% { transform: translate(70px, 120px) scale(1.1); }
+}
+@keyframes drift-glow-3 {
+  0% { transform: translate(0, 0) scale(0.9); }
+  50% { transform: translate(100px, -80px) scale(1.1); }
+  100% { transform: translate(-60px, 40px) scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   9. TYPING CURSOR BLINK — for terminal-style text
+   ═══════════════════════════════════════════════════════════ */
+.typing-cursor::after {
+  content: '▌';
+  display: inline-block;
+  color: #E8B85C;
+  animation: blink-cursor 1s step-end infinite;
+  margin-left: 2px;
+}
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   10. NAVBAR LINK UNDERLINE ANIMATION
+   ═══════════════════════════════════════════════════════════ */
+.nav-link-animated {
+  position: relative;
+}
+.nav-link-animated::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #E8B85C;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-50%);
+}
+.nav-link-animated:hover::after {
+  width: 80%;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   11. GLOWING CARD HOVER (for special feature highlights)
+   ═══════════════════════════════════════════════════════════ */
+.glow-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glow-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:
+    0 0 20px rgba(232, 184, 92, 0.12),
+    0 20px 50px -15px rgba(0, 0, 0, 0.6);
+  border-color: rgba(232, 184, 92, 0.4);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   12. TABLE ROW HOVER HIGHLIGHT
+   ═══════════════════════════════════════════════════════════ */
+.table-row-hover {
+  transition: all 0.2s ease;
+}
+.table-row-hover:hover {
+  background: rgba(232, 184, 92, 0.04);
+  box-shadow: inset 3px 0 0 0 #E8B85C;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   13. INPUT FOCUS GLOW
+   ═══════════════════════════════════════════════════════════ */
+.input-glow:focus {
+  box-shadow: 0 0 0 3px rgba(232, 184, 92, 0.15), 0 0 20px rgba(232, 184, 92, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   14. KEYFRAME UTILITIES
+   ═══════════════════════════════════════════════════════════ */
+@keyframes fade-up-smooth {
+  0% { opacity: 0; transform: translateY(22px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-down-smooth {
+  0% { opacity: 0; transform: translateY(-22px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-slow-anim {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.06); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   15. MONACO EDITOR OVERRIDES
+   ═══════════════════════════════════════════════════════════ */
+.monaco-editor {
+  padding-top: 8px !important;
+  background-color: #0B0E14 !important;
+}

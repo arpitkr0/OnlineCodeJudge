@@ -1,0 +1,78 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: codejudge
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d codejudge"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  app:
+    build: ./backend
+    depends_on:
+      - postgres
+      - kafka
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/codejudge:/tmp/codejudge
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/codejudge
+      DB_USER: admin
+      DB_PASSWORD: password
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_ENABLED: "true"
+      DOCKER_EXECUTION_ENABLED: "true"
+      JWT_SECRET: Y29kZWp1ZGdlU2VjcmV0S2V5Rm9yRGV2T25seUNoYW5nZUluUHJvZA==
+
+  worker:
+    build: ./backend
+    command: ["--spring.profiles.active=worker"]
+    depends_on:
+      - postgres
+      - kafka
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/codejudge:/tmp/codejudge
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/codejudge
+      DB_USER: admin
+      DB_PASSWORD: password
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_ENABLED: "true"
+      DOCKER_EXECUTION_ENABLED: "true"
+      JWT_SECRET: Y29kZWp1ZGdlU2VjcmV0S2V5Rm9yRGV2T25seUNoYW5nZUluUHJvZA==
+
+# Scale workers locally with:
+# docker compose up --scale worker=4
