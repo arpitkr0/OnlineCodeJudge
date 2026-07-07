@@ -15,9 +15,13 @@ public class PythonExecutor extends AbstractDockerExecutor {
     }
 
     @Override
-    protected String runCommand(String input, int timeLimitMs) {
-        int timeoutSec = Math.max(2, (timeLimitMs + 1500) / 1000);
-        return "cd /code && start=$(date +%s%3N); printf '%s' '" + input + "' | timeout " + timeoutSec + " python main.py; ec=$?; end=$(date +%s%3N); echo \"---RUNTIME_MS---$((end - start))\" >&2; exit $ec";
+    protected String compileCmd() {
+        return "";
+    }
+
+    @Override
+    protected String execCmd() {
+        return "python main.py";
     }
 
     @Override

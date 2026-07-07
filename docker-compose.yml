@@ -46,7 +46,7 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp/codejudge:/tmp/codejudge
+      - codejudge_workspace:/tmp/codejudge
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/codejudge
       DB_USER: admin
@@ -54,6 +54,7 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       KAFKA_ENABLED: "true"
       DOCKER_EXECUTION_ENABLED: "true"
+      DOCKER_VOLUME: codejudge_workspace
       JWT_SECRET: Y29kZWp1ZGdlU2VjcmV0S2V5Rm9yRGV2T25seUNoYW5nZUluUHJvZA==
 
   worker:
@@ -64,7 +65,7 @@ services:
       - kafka
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp/codejudge:/tmp/codejudge
+      - codejudge_workspace:/tmp/codejudge
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/codejudge
       DB_USER: admin
@@ -72,7 +73,12 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       KAFKA_ENABLED: "true"
       DOCKER_EXECUTION_ENABLED: "true"
+      DOCKER_VOLUME: codejudge_workspace
       JWT_SECRET: Y29kZWp1ZGdlU2VjcmV0S2V5Rm9yRGV2T25seUNoYW5nZUluUHJvZA==
+
+volumes:
+  codejudge_workspace:
+    name: codejudge_workspace
 
 # Scale workers locally with:
 # docker compose up --scale worker=4

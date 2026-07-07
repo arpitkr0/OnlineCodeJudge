@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class WorkerManager {
@@ -49,9 +51,10 @@ public class WorkerManager {
         submissionRepository.saveAndFlush(submission);
         webSocketHandler.publish(SubmissionResponse.from(submission));
 
-        int total = (int) problem.getTestCases().stream()
+        List<TestCase> validTestCases = problem.getTestCases().stream()
                 .filter(tc -> !Boolean.TRUE.equals(submission.getSampleOnly()) || !tc.isHidden())
-                .count();
+                .toList();
+        int total = validTestCases.size();
         int passed = 0;
         long maxRuntime = 0;
         int peakMemory = 0;
@@ -59,13 +62,13 @@ public class WorkerManager {
 
         try {
             LanguageExecutor executor = executorFactory.get(submission.getLanguage());
-            int index = 0;
-            for (TestCase testCase : problem.getTestCases()) {
-                if (Boolean.TRUE.equals(submission.getSampleOnly()) && testCase.isHidden()) {
-                    continue;
-                }
-                index++;
-                ExecutionResult result = executor.execute(submission, problem, testCase.getInput());
+            List<String> inputs = validTestCases.stream().map(TestCase::getInput).toList();
+            List<ExecutionResult> results = executor.executeBatch(submission, problem, inputs);
+
+            for (int i = 0; i < validTestCases.size(); i++) {
+                int index = i + 1;
+                TestCase testCase = validTestCases.get(i);
+                ExecutionResult result = results.get(i);
                 SubmissionStatus verdict = verdictEvaluator.evaluate(result, testCase.getExpectedOutput(), problem.getTimeLimitMs());
                 maxRuntime = Math.max(maxRuntime, result.metrics().runtimeMs());
                 peakMemory = Math.max(peakMemory, result.metrics().memoryMb());
